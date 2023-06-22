@@ -3,19 +3,34 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import bodyParser from 'body-parser';
+import helmet from "helmet";
 
-import userRoute from './server/routes/user.js';
-// import postRoute from './routes/posts.js';
+import clientRoutes from './server/routes/client.js';
+import generalRoutes from './server/routes/general.js';
+import managementRoutes from './server/routes/management.js';
+import salesRoutes from './server/routes/sales.js';
 
+/* CONFIGURATION */
 const app = express();
 dotenv.config();
 
-app.use(morgan('dev'));
+app.use(morgan('common'));
 app.use(express.json({ limit: '30mb', extended: true }));
 app.use(express.urlencoded({ limit: '30mb', extended: true }));
 app.use(cors());
-app.use('/users', userRoute);
-// app.use('/posts', postRoute);
+app.use(helmet());
+app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }));
+
+/* ROUTES */
+app.use('/client', clientRoutes);
+app.use('/general', generalRoutes);
+app.use('/management', managementRoutes);
+app.use('/sales', salesRoutes);
+
+
 app.get('/', (req, res) => {
   res.send('APP IS RUNNING');
 });
